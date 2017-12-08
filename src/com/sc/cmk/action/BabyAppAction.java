@@ -21,7 +21,7 @@ import com.sc.framework.vo.Page;
 @RequestMapping("/babyApp")
 public class BabyAppAction  extends BaseAction{
 	@Autowired
-	BabyAppService babyAppService;
+	BabyAppService babyAppService; 
 
 	/**
 	 * APP页面
