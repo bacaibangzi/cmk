@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+
+<mapper namespace="com.sc.cmk.dao.BabyAppDao" >
+
+    <resultMap id="RM.BabyApp" type="com.sc.cmk.pojo.BabyApp">
+        <result property="sn" column="sn"/>
+        <result property="babyId" column="baby_id"/>
+        <result property="appName" column="app_name"/>
+        <result property="parentPhone" column="parent_phone"/>
+        <result property="extend1" column="extend1"/>
+        <result property="extend2" column="extend2"/>
+    </resultMap>
+
+	<sql id="BabyApp.columns">
+	    <![CDATA[
+        sn ,baby_id ,app_name ,parent_phone ,extend1 ,extend2 
+	    ]]>
+	</sql>
+	
+    <insert id="insert" >
+    <![CDATA[
+        REPLACE INTO baby_app (
+        	sn ,
+        	baby_id ,
+        	app_name ,
+        	parent_phone ,
+        	extend1 ,
+        	extend2 
+        ) VALUES (
+			nextVal('baby_app') ,
+			#{babyId} ,
+			#{appName} ,
+			#{parentPhone} ,
+			#{extend1} ,
+			#{extend2} 
+        )
+    ]]>
+    <!--
+    mysql:		type="post" SELECT  select last_insert_id()
+    sqlserver:	type="post" SELECT  @@identity  AS  ID
+    oracle:		type="pre" 	SELECT  sequenceName.nextval AS ID FROM DUAL
+    DB2:		type="pre"	values nextval for sequenceName
+        <selectKey resultClass="java.lang.Long" type="post" keyProperty="snparentPhone" >
+            select last_insert_id()
+        </selectKey>
+    -->
+    </insert>
+
+    <update id="update" >
+    <![CDATA[
+        UPDATE baby_app SET
+	        baby_id = #{babyId} ,
+	        app_name = #{appName} ,
+	        extend1 = #{extend1} ,
+	        extend2 = #{extend2} 
+        WHERE 
+	        sn = #{sn} ,
+	        parent_phone = #{parentPhone} 
+    ]]>
+    </update>
+
+    <delete id="delete">
+    <![CDATA[
+        DELETE FROM baby_app WHERE
+        sn = #{sn} ,
+        parent_phone = #{parentPhone} 
+    ]]>
+    </delete>
+    
+    <select id="getById" resultMap="RM.BabyApp">
+	    SELECT <include refid="BabyApp.columns"/>
+	    <![CDATA[
+	        FROM baby_app 
+	        WHERE 
+		        sn = #{sn} ,
+		        parent_phone = #{parentPhone} 
+	    ]]>
+    </select>
+
+	<sql id="BabyApp.findPage.where">
+	    <trim prefix="WHERE" prefixOverrides="AND|OR" >
+		       <if test="sn !=null">
+		            AND sn = #{sn}
+		       </if>
+		       <if test="babyId !=null">
+		            AND baby_id = #{babyId}
+		       </if>
+		       <if test="appName !=null">
+		            AND app_name = #{appName}
+		       </if>
+		       <if test="parentPhone !=null">
+		            AND parent_phone = #{parentPhone}
+		       </if>
+		       <if test="extend1 !=null">
+		            AND extend1 = #{extend1}
+		       </if>
+		       <if test="extend2 !=null">
+		            AND extend2 = #{extend2}
+		       </if>
+	    </trim>	
+	</sql>
+	 
+    <select id="findPageCount" resultType="java.lang.Integer">
+        SELECT count(*) FROM baby_app <include refid="BabyApp.findPage.where"/>    
+    </select>
+    
+    <select id="findPage" resultMap="RM.BabyApp">
+    	SELECT <include refid="BabyApp.columns"/> FROM baby_app 
+		<include refid="BabyApp.findPage.where"/>
+		<if test="sortColumns != null" >
+			order by #{sortColumns}
+		</if>
+    </select>
+    
+    <select id="query" resultMap="RM.BabyApp">
+    	SELECT <include refid="BabyApp.columns"/> FROM baby_app 
+		<include refid="BabyApp.findPage.where"/>
+		<if test="sortColumns != null" >
+			order by #{sortColumns}
+		</if>
+    </select>
+
+	
+</mapper>
+

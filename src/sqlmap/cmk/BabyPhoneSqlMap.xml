@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+
+<mapper namespace="com.sc.cmk.dao.BabyPhoneDao" >
+
+    <resultMap id="RM.BabyPhone" type="com.sc.cmk.pojo.BabyPhone">
+        <result property="sn" column="sn"/>
+        <result property="babyId" column="baby_id"/>
+        <result property="babyName" column="baby_name"/>
+        <result property="babyPhone" column="baby_phone"/>
+        <result property="parentPhone" column="parent_phone"/>
+        <result property="extend1" column="extend1"/>
+        <result property="extend2" column="extend2"/>
+    </resultMap>
+
+	<sql id="BabyPhone.columns">
+	    <![CDATA[
+        sn ,baby_id ,baby_name ,baby_phone ,parent_phone ,extend1 ,extend2 
+	    ]]>
+	</sql>
+	
+    <insert id="insert" >
+    <![CDATA[
+        REPLACE INTO baby_phone (
+        	sn ,
+        	baby_id ,
+        	baby_name ,
+        	baby_phone ,
+        	parent_phone ,
+        	extend1 ,
+        	extend2 
+        ) VALUES (
+			nextVal('baby_phone') ,
+			#{babyId} ,
+			#{babyName} ,
+			#{babyPhone} ,
+			#{parentPhone} ,
+			#{extend1} ,
+			#{extend2} 
+        )
+    ]]>
+    <!--
+    mysql:		type="post" SELECT  select last_insert_id()
+    sqlserver:	type="post" SELECT  @@identity  AS  ID
+    oracle:		type="pre" 	SELECT  sequenceName.nextval AS ID FROM DUAL
+    DB2:		type="pre"	values nextval for sequenceName
+        <selectKey resultClass="java.lang.Long" type="post" keyProperty="sn" >
+            select last_insert_id()
+        </selectKey>
+    -->
+    </insert>
+
+    <update id="update" >
+    <![CDATA[
+        UPDATE baby_phone SET
+	        baby_id = #{babyId} ,
+	        baby_name = #{babyName} ,
+	        baby_phone = #{babyPhone} ,
+	        parent_phone = #{parentPhone} ,
+	        extend1 = #{extend1} ,
+	        extend2 = #{extend2} 
+        WHERE 
+	        sn = #{sn} 
+    ]]>
+    </update>
+
+    <delete id="delete">
+    <![CDATA[
+        DELETE FROM baby_phone WHERE
+        sn = #{sn} 
+    ]]>
+    </delete>
+    
+    <select id="getById" resultMap="RM.BabyPhone">
+	    SELECT <include refid="BabyPhone.columns"/>
+	    <![CDATA[
+	        FROM baby_phone 
+	        WHERE 
+		        sn = #{sn} 
+	    ]]>
+    </select>
+
+	<sql id="BabyPhone.findPage.where">
+	    <trim prefix="WHERE" prefixOverrides="AND|OR" >
+		       <if test="sn !=null">
+		            AND sn = #{sn}
+		       </if>
+		       <if test="babyId !=null">
+		            AND baby_id = #{babyId}
+		       </if>
+		       <if test="babyName !=null">
+		            AND baby_name = #{babyName}
+		       </if>
+		       <if test="babyPhone !=null">
+		            AND baby_phone = #{babyPhone}
+		       </if>
+		       <if test="parentPhone !=null">
+		            AND parent_phone = #{parentPhone}
+		       </if>
+		       <if test="extend1 !=null">
+		            AND extend1 = #{extend1}
+		       </if>
+		       <if test="extend2 !=null">
+		            AND extend2 = #{extend2}
+		       </if>
+	    </trim>	
+	</sql>
+	 
+    <select id="findPageCount" resultType="java.lang.Integer">
+        SELECT count(*) FROM baby_phone <include refid="BabyPhone.findPage.where"/>    
+    </select>
+    
+    <select id="findPage" resultMap="RM.BabyPhone">
+    	SELECT <include refid="BabyPhone.columns"/> FROM baby_phone 
+		<include refid="BabyPhone.findPage.where"/>
+		<if test="sortColumns != null" >
+			order by #{sortColumns}
+		</if>
+    </select>
+    
+    <select id="query" resultMap="RM.BabyPhone">
+    	SELECT <include refid="BabyPhone.columns"/> FROM baby_phone 
+		<include refid="BabyPhone.findPage.where"/>
+		<if test="sortColumns != null" >
+			order by #{sortColumns}
+		</if>
+    </select>
+
+	
+</mapper>
+
