@@ -24,7 +24,7 @@ public class BabyAppAction  extends BaseAction{
 	BabyAppService babyAppService; 
 
 	/**
-	 * APP页面
+	 * APP页面1
 	 * @return
 	 */
 	@RequestMapping(value = "/main.htm", method = RequestMethod.GET)
